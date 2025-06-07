@@ -1,71 +1,130 @@
 {% extends 'hospital/doctor_base.html' %}
 {% block content %}
-{%load static%}
+{% load static %}
 
 <head>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-  <style media="screen">
+  <style>
     a:link {
       text-decoration: none;
     }
 
     h6 {
       text-align: center;
+      font-weight: 600;
+      color: #fff;
     }
 
     .row {
-      margin: 100px;
+      margin: 50px 100px;
+    }
+
+    .panel-primary {
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(135deg, #337ab7, #286090);
+      border-color: #2e6da4;
+    }
+
+    .panel-heading {
+      background: transparent;
+      border-bottom: none;
+      padding: 15px 20px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    table {
+      background: #fff;
+      border-radius: 0 0 8px 8px;
+    }
+
+    table thead tr {
+      background: #337ab7;
+      color: white;
+      font-weight: 600;
+    }
+
+    table tbody tr:hover {
+      background-color: #f0f8ff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    img {
+      border-radius: 50%;
+      border: 2px solid #337ab7;
+    }
+
+    /* Ajuste para el formulario de búsqueda */
+    form.form-inline {
+      margin-left: auto;
+      margin-bottom: 20px;
+      max-width: 300px;
+    }
+
+    form.form-inline .form-control {
+      width: 180px;
+      display: inline-block;
+    }
+
+    form.form-inline .btn {
+      display: inline-block;
+    }
+
+    /* Mensaje de no pacientes */
+    .no-patients {
+      margin-top: 100px;
+      color: #d9534f;
+      text-align: center;
+      font-weight: bold;
     }
   </style>
 </head>
 
-
-
 <div class="container">
 
-    <form  action="/search" method="get" style="margin-left:70%;" class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" name="query" id="query" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
- 
+  <form action="/search" method="get" class="form-inline pull-right">
+    <input class="form-control mr-sm-2" type="search" placeholder="Buscar paciente" name="query" id="query" aria-label="Buscar">
+    <button class="btn btn-success" type="submit">Buscar</button>
+  </form>
 
   {% if patients %}
   <div class="panel panel-primary">
     <div class="panel-heading">
-      <h6 class="panel-title">Your Total Patient List</h6>
+      <h6 class="panel-title">Tu lista total de pacientes</h6>
     </div>
     <table class="table table-hover" id="dev-table">
       <thead>
         <tr>
           <th>Nombre</th>
           <th>Foto de Perfil</th>
-          <th>Sintomas</th>
+          <th>Síntomas</th>
           <th>Celular</th>
-          <th>Direccion</th>
-
+          <th>Dirección</th>
         </tr>
       </thead>
-      {% for p in patients %}
-      <tr>
-        <td> {{p.get_name}}</td>
-        <td> <img src="{% static p.profile_pic.url %}" alt="Foto de Perfil" height="40px" width="40px" /></td>
-        <td>{{p.symptoms}}</td>
-        <td>{{p.mobile}}</td>
-        <td>{{p.address}}</td>
-      </tr>
-      {% endfor %}
+      <tbody>
+        {% for p in patients %}
+        <tr>
+          <td>{{ p.get_name }}</td>
+          <td><img src="{% static p.profile_pic.url %}" alt="Foto de Perfil" height="40" width="40" /></td>
+          <td>{{ p.symptoms }}</td>
+          <td>{{ p.mobile }}</td>
+          <td>{{ p.address }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
   </div>
-  {%else%}
-  <br><br><br>
-  <h4 style="text-align: center;color: red;">¡No se encontraron pacientes!</h4>
+  {% else %}
+  <div class="no-patients">
+    <h4>¡No se encontraron pacientes!</h4>
+  </div>
   {% endif %}
 
-
 </div>
-
 
 {% endblock content %}

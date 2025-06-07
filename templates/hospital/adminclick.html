@@ -2,17 +2,16 @@
 
 {% block content %}
 
-<br>
-<br>
+<br><br>
 
-<div class="jumbotron" style="margin-bottom:0px;">
-  <h1 class="display-4" style="text-align:center;">Hola, Administrador</h1>
-  <p class="lead">Bienvenido al Sistema de Gestión Hospitalaria..</p>
+<div class="jumbotron text-center" style="margin-bottom:0;">
+  <h1 class="display-4">Hola, Administrador</h1>
+  <p class="lead">Bienvenido al Sistema de Gestión Hospitalaria.</p>
   <hr class="my-4">
-  <p>Puede acceder a varias funciones después de registrarse o iniciar sesión</p>
+  <p>Puede acceder a varias funciones después de registrarse o iniciar sesión.</p>
   <p class="lead">
-    <a class="btn btn-primary btn-lg" href="/adminsignup" role="button">Registrarse</a>
-    <a class="btn btn-primary btn-lg" href="/adminlogin" role="button">Iniciar Sesion</a>
+    <a class="btn btn-primary btn-lg" href="{% url 'adminsignup' %}" role="button">Registrarse</a>
+    <a class="btn btn-primary btn-lg" href="{% url 'adminlogin' %}" role="button">Iniciar Sesión</a>
   </p>
 </div>
 

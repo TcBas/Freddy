@@ -10,51 +10,96 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-  <style type="text/css">
+  <style>
+    /* Container for the navbar */
     .bs-example {
-      margin: 0px;
-
+      margin: 0;
     }
 
+    /* Navbar brand style */
     .navbar-brand {
-      font-size: 20px;
-      font-family: sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      letter-spacing: 1.2px;
+      color: #ffffff !important;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+      transition: color 0.3s ease;
+    }
 
+    .navbar-brand:hover {
+      color: #ffd700 !important;
+      text-shadow: 0 0 10px #ffd700;
+    }
+
+    /* Navbar background with subtle gradient */
+    .navbar {
+      background: linear-gradient(90deg, #2e5aa8, #337AB7);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Nav links styling */
+    .navbar-nav .nav-link {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e2e6ea !important;
+      margin-right: 15px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      text-shadow: 0 0 1px rgba(0,0,0,0.5);
+    }
+
+    .navbar-nav .nav-link:hover {
+      background-color: #ffd700;
+      color: #1a1a1a !important;
+      text-shadow: none;
+    }
+
+    /* Navbar toggler (hamburger) styling */
+    .navbar-toggler {
+      border: none;
+      outline: none;
+      filter: drop-shadow(0 0 1px rgba(0,0,0,0.4));
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-width='3' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Fix body padding to avoid content hiding under fixed navbar */
+    body {
+      padding-top: 70px;
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
   </style>
 </head>
 
 <body>
 
-
-
   <div class="bs-example">
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background:#337AB7;">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
       <a href="/" class="navbar-brand">Gestion Hospitalaria</a>
-      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
         <div class="navbar-nav">
-
           <a href="/adminclick" class="nav-item nav-link">Administrador</a>
           <a href="/doctorclick" class="nav-item nav-link">Doctor</a>
           <a href="/patientclick" class="nav-item nav-link">Paciente</a>
-
-
         </div>
 
         <div class="navbar-nav">
           <a href="/aboutus" class="nav-item nav-link">Sobre Nosotros</a>
           <a href="/contactus" class="nav-item nav-link">Contactanos</a>
         </div>
-
       </div>
     </nav>
   </div>
-
-  
 
 </body>
 

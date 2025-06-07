@@ -1,48 +1,78 @@
 <!DOCTYPE html>
-
 <html lang="en" dir="ltr">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>LazyCoder || sumit</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Ronny | Sebastian | Soledad</title>
 
+  <!-- Bootstrap CSS CDN -->
+  <link
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
 
-  <style media="screen">
+  <style>
+    body {
+      background: #f8f9fa;
+    }
     .jumbotron {
-      margin-top: 0px;
-      margin-bottom: 0px;
-    }
-
-    .jumbotron h1 {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      margin: 0;
+      border-radius: 0;
+      padding: 4rem 2rem;
       text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
-
-    .alert {
-      margin: 0px;
+    .jumbotron h1 {
+      font-weight: 700;
+      font-size: 3rem;
+    }
+    .jumbotron p.lead {
+      font-size: 1.3rem;
+      margin-top: 1rem;
+    }
+    .btn-primary {
+      background: #ff6a00;
+      border: none;
+      box-shadow: 0 4px 15px rgba(255, 106, 0, 0.6);
+      transition: background 0.3s ease;
+    }
+    .btn-primary:hover {
+      background: #e65c00;
+    }
+    hr.my-4 {
+      border-top: 2px solid rgba(255, 255, 255, 0.4);
+      width: 50%;
+      margin: 2rem auto;
     }
   </style>
-
 </head>
 
 <body>
   {% include "hospital/navbar.html" %}
-  <br>
-  <br>
 
-  <div class="jumbotron" style="margin-top: 0px;
-    margin-bottom: 0px;">
-    <h1 class="display-4">Hello {{request.user.first_name}}</h1>
-    <p class="lead">Tu cuenta aún no ha sido aprobada  <br><br>Nuestro equipo está revisando tu perfil <br><br> ¡Pronto tu cuenta será confirmada!</p>
-    <hr class="my-4">
-    <p>Revisa más tarde</p>
+  <div class="jumbotron">
+    <h1 class="display-4">Hola, {{ request.user.first_name }}!</h1>
+    <p class="lead">
+      Tu cuenta aún no ha sido aprobada.<br /><br />
+      Nuestro equipo está revisando tu perfil.<br /><br />
+      ¡Pronto tu cuenta será confirmada!
+    </p>
+    <hr class="my-4" />
+    <p>Por favor, revisa más tarde.</p>
     <p class="lead">
       <a class="btn btn-primary btn-lg" href="/logout" role="button">Cerrar sesión por ahora</a>
     </p>
   </div>
 
   {% include "hospital/footer.html" %}
-</body>
 
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 
 </html>

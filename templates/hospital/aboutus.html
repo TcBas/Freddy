@@ -5,41 +5,89 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>LazyCoder || sumit</title>
+  <title>Ronny|Sebastian|Soledad</title>
   <style media="screen">
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      margin: 0;
+      padding: 0;
+    }
+
     .jumbotron {
       margin-top: 0px;
       margin-bottom: 0px;
+      background-color: #ffffff;
+      padding: 2rem 2rem;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .jumbotron h1 {
+      text-align: center;
+      font-size: 3rem;
+      color: #2c3e50;
+    }
+
+    .jumbotron p {
+      font-size: 1.2rem;
+      color: #34495e;
       text-align: center;
     }
 
     .alert {
       margin: 0px;
+      font-size: 1.5rem;
+      background-color: #2ecc71;
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      width: 50%;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary {
+      background-color: #3498db;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      border-radius: 5px;
+      box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
+
+    center {
+      margin-top: 30px;
+      margin-bottom: 20px;
     }
   </style>
-  <title>sumit</title>
+  <title>presentar</title>
 </head>
 
 <body>
   {% include "hospital/navbar.html" %}
   <br><br>
   <center>
-    <h3 class='alert alert-success' style="margin-bottom:0px;">About Us !</h3>
+    <h3 class='alert alert-success' style="margin-bottom:0px;">Sobre nosotros !</h3>
   </center>
   <div class="jumbotron" style="margin-bottom: 0px;margin-top: 0px;">
     <h1 class="display-4">Hello</h1>
     <p class="lead">Un servicio dedicado al Administrador del Hospital, Doctores y Pacientes.</p>
     <hr class="my-4">
-    <p>Explore our Website.</p>
+    <p>Explora nuestro sitio web.</p>
     <p class="lead">
       <a class="btn btn-primary btn-lg" href="/" role="button">HOME</a>
     </p>
   </div>
   {% include "hospital/footer.html" %}
 </body>
-
 
 </html>

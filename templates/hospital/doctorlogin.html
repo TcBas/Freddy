@@ -3,96 +3,141 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <title>LazyCoder || sumit</title>
-
 
   <style type="text/css">
     body {
       color: #aa082e;
-      background-color: #b6bde7;
+      background: linear-gradient(135deg, #b6bde7, #8a9ae6);
       font-family: 'Roboto', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding-top: 60px;
+      margin: 0;
     }
 
-    a:link {
+    a:link,
+    a:visited {
       text-decoration: none;
+      color: #0062cc;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    a:hover,
+    a:focus {
+      color: #004080;
+      text-decoration: underline;
     }
 
     .note {
       text-align: center;
       height: 80px;
-      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      background: linear-gradient(to right, #0072ff, #8811c5);
       color: #fff;
-      font-weight: bold;
+      font-weight: 700;
+      font-size: 1.5rem;
       line-height: 80px;
+      border-radius: 0.5rem 0.5rem 0 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     .form-content {
-      padding: 5%;
+      padding: 2rem;
       border: 1px solid #ced4da;
-      margin-bottom: 2%;
+      border-radius: 0 0 0.5rem 0.5rem;
+      background-color: #fff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      max-width: 480px;
+      width: 100%;
     }
 
     .form-control {
-      border-radius: 1.5rem;
+      border-radius: 1.5rem !important;
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      border: 1.5px solid #ced4da !important;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #8811c5 !important;
+      box-shadow: 0 0 8px rgba(136, 17, 197, 0.5);
+      outline: none;
     }
 
     .btnSubmit {
       border: none;
       border-radius: 1.5rem;
-      padding: 1%;
-      width: 20%;
+      padding: 0.75rem 0;
+      width: 100%;
       cursor: pointer;
-      background: #0062cc;
+      background: linear-gradient(45deg, #0072ff, #8811c5);
       color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+      box-shadow: 0 4px 12px rgba(136, 17, 197, 0.6);
+      transition: background 0.3s ease;
+    }
+
+    .btnSubmit:hover {
+      background: linear-gradient(45deg, #005bbb, #6a0d99);
+    }
+
+    .text-center {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    .register-form {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
     }
   </style>
-
 </head>
 
 <body>
   {% include "hospital/navbar.html" %}
-  <br>
-  <br>
-  <br><br>
-
-  <!--- página de inicio de sesión para doctor por admin(sumit)  ---------->
-  <form method="post">
+  
+  <form method="post" class="register-form">
     {% csrf_token %}
-    <div class="container register-form">
-      <div class="form">
-        <div class="note">
-          <p>Pagina de Inicio de Sesion para Doctor</p>
-        </div>
+    <div class="form">
+      <div class="note">
+        <p>Pagina de Inicio de Sesion para Doctor</p>
+      </div>
 
-        <div class="form-content">
-          <div class="row">
-            <div class="col-md-6">
-
-              <div class="form-group">
-                {% render_field form.username class="form-control" placeholder="Nombre de Usuario" %}
-              </div>
-
-            </div>
-            <div class="col-md-6">
-
-              <div class="form-group">
-                {% render_field form.password class="form-control" placeholder="Contraseña" %}
-              </div>
-
+      <div class="form-content">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div class="form-group">
+              {% render_field form.username class="form-control" placeholder="Nombre de Usuario" %}
             </div>
           </div>
-          <button type="submit" class="btnSubmit">Iniciar Sesion</button>
-          <div class="text-center">¿No tienes cuenta? <a href="doctorsignup">Regístrate aquí</a></div>
+
+          <div class="col-12 mb-3">
+            <div class="form-group">
+              {% render_field form.password class="form-control" placeholder="Contraseña" %}
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btnSubmit">Iniciar Sesion</button>
+        <div class="text-center">
+          ¿No tienes cuenta? <a href="doctorsignup">Regístrate aquí</a>
         </div>
       </div>
     </div>
-
   </form>
 
   <br><br><br>
-  
 
   {% include "hospital/footer.html" %}
 </body>

@@ -1,19 +1,17 @@
 {% extends 'hospital/homebase.html' %}
 
-
 {% block content %}
 
-<br>
-<br>
+<br><br>
 
-<div class="jumbotron" style="margin-bottom:0px;">
-  <h1 class="display-4" style="text-align:center;">Hola, Doctor</h1>
+<div class="jumbotron text-center" style="background: linear-gradient(135deg, #6a11cb, #2575fc); color: white; border-radius: 10px; padding: 3rem 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+  <h1 class="display-4">Hola, Doctor</h1>
   <p class="lead">Bienvenido al Sistema de Gestión Hospitalaria.</p>
-  <hr class="my-4">
+  <hr class="my-4" style="border-color: rgba(255,255,255,0.5); width: 60%;">
   <p>Puedes acceder a varias funciones después de Registrarte/Iniciar sesión.</p>
   <p class="lead">
-    <a class="btn btn-primary btn-lg" href="/doctorsignup" role="button">Registrar</a>
-    <a class="btn btn-primary btn-lg" href="/doctorlogin" role="button">Iniciar sesion</a>
+    <a class="btn btn-light btn-lg mx-2" href="/doctorsignup" role="button" style="color: #2575fc; font-weight: 600;">Registrar</a>
+    <a class="btn btn-light btn-lg mx-2" href="/doctorlogin" role="button" style="color: #2575fc; font-weight: 600;">Iniciar sesión</a>
   </p>
 </div>
 

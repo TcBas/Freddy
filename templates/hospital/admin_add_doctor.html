@@ -8,33 +8,75 @@
       text-decoration: none;
     }
 
+    body {
+      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     .note {
       text-align: center;
       height: 80px;
-      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      background: linear-gradient(to right, #0072ff, #8811c5);
       color: #fff;
       font-weight: bold;
       line-height: 80px;
+      font-size: 1.5rem;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .register-form {
+      margin-top: 30px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
     }
 
     .form-content {
-      padding: 5%;
-      border: 1px solid #ced4da;
-      margin-bottom: 2%;
+      padding: 5% 8%;
     }
 
     .form-control {
       border-radius: 1.5rem;
+      padding: 0.75rem 1.2rem;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #0072ff;
+      box-shadow: 0 0 6px rgba(0, 114, 255, 0.3);
     }
 
     .btnSubmit {
       border: none;
-      border-radius: 1.5rem;
-      padding: 1%;
-      width: 20%;
-      cursor: pointer;
-      background: #0062cc;
-      color: #fff;
+      border-radius: 2rem;
+      padding: 10px 20px;
+      width: 100%;
+      max-width: 200px;
+      background: #0072ff;
+      color: white;
+      font-weight: bold;
+      transition: 0.4s ease-in-out;
+      margin-top: 10px;
+    }
+
+    .btnSubmit:hover {
+      background: #0056b3;
+      transform: scale(1.05);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
     }
 
     .menu {
@@ -45,10 +87,10 @@
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 </head>
+
 <br><br><br>
-<!------ página de registro de doctor por el administrador (sumit)  ---------->
+
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="container register-form">
@@ -66,12 +108,11 @@
               {% render_field userForm.username class="form-control" placeholder="Nombre de Usuario" %}
             </div>
             <div class="form-group">
-              {% render_field doctorForm.department class="form-control" placeholder="Departmento" %}
+              {% render_field doctorForm.department class="form-control" placeholder="Departamento" %}
             </div>
             <div class="form-group">
-              {% render_field doctorForm.address class="form-control" placeholder="Direccion" %}
+              {% render_field doctorForm.address class="form-control" placeholder="Dirección" %}
             </div>
-
           </div>
           <div class="col-md-6">
             <div class="form-group">
@@ -81,18 +122,19 @@
               {% render_field userForm.password class="form-control" placeholder="Contraseña" %}
             </div>
             <div class="form-group">
-              {% render_field doctorForm.mobile class="form-control"  placeholder="Celular" %}
+              {% render_field doctorForm.mobile class="form-control" placeholder="Celular" %}
             </div>
             <div class="form-group">
               {% render_field doctorForm.profile_pic required="required" class="form-control" placeholder="Foto de Perfil" %}
             </div>
           </div>
         </div>
-        <button type="submit" class="btnSubmit">Register</button>
+        <div class="text-center">
+          <button type="submit" class="btnSubmit">Registrar</button>
+        </div>
       </div>
     </div>
   </div>
-
 </form>
 
 {% endblock content %}

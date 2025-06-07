@@ -2,58 +2,70 @@
 {% load widget_tweaks %}
 {% block content %}
 
-<head>
-  <style media="screen">
-    a:link {
-      text-decoration: none;
-    }
+<style>
+  a {
+    text-decoration: none !important;
+  }
+  .note {
+    text-align: center;
+    height: 80px;
+    background: linear-gradient(90deg, #0072ff, #8811c5);
+    color: #fff;
+    font-weight: 700;
+    line-height: 80px;
+    border-radius: 0.5rem 0.5rem 0 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .form-content {
+    padding: 30px;
+    border: 1px solid #ced4da;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+    background-color: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+  }
+  .form-control {
+    border-radius: 1.5rem !important;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: 1.5px solid #ced4da !important;
+  }
+  .form-control:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 5px rgba(0,123,255,0.5) !important;
+  }
+  .form-control-file {
+    border-radius: 0.5rem !important;
+  }
+  .btnSubmit {
+    border: none;
+    border-radius: 1.5rem;
+    padding: 12px 40px;
+    width: 100%;
+    cursor: pointer;
+    background: linear-gradient(90deg, #0072ff, #8811c5);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(136,17,197,0.6);
+    transition: background 0.4s ease;
+  }
+  .btnSubmit:hover {
+    background: linear-gradient(90deg, #005ecb, #5b0e8b);
+  }
+  .register-form {
+    margin-top: 40px;
+    margin-bottom: 80px;
+  }
+</style>
 
-    .note {
-      text-align: center;
-      height: 80px;
-      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
-      color: #fff;
-      font-weight: bold;
-      line-height: 80px;
-    }
-
-    .form-content {
-      padding: 5%;
-      border: 1px solid #ced4da;
-      margin-bottom: 2%;
-    }
-
-    .form-control {
-      border-radius: 1.5rem;
-    }
-
-    .btnSubmit {
-      border: none;
-      border-radius: 1.5rem;
-      padding: 1%;
-      width: 20%;
-      cursor: pointer;
-      background: #0062cc;
-      color: #fff;
-    }
-
-    .menu {
-      top: 50px;
-    }
-  </style>
-
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-</head>
-<br><br>
-<!------ página de actualización para doctor por administrador (sumit) ---------->
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="container register-form">
+<div class="container register-form">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
     <div class="form">
       <div class="note">
-        <p>Actualizar Datos del Doctor</p>
+        Actualizar Datos del Paciente
       </div>
       <div class="form-content">
         <div class="row">
@@ -65,13 +77,13 @@
               {% render_field userForm.username class="form-control" placeholder="Nombre de Usuario" %}
             </div>
             <div class="form-group">
-              {% render_field patientForm.address class="form-control" placeholder="Direccion" %}
+              {% render_field patientForm.address class="form-control" placeholder="Dirección" %}
             </div>
             <div class="form-group">
-              {% render_field patientForm.symptoms class="form-control" placeholder="Sintomas" %}
+              {% render_field patientForm.symptoms class="form-control" placeholder="Síntomas" %}
             </div>
             <div class="form-group">
-              {% render_field patientForm.profile_pic class="form-control" placeholder="Foto de Perfil" %}
+              {% render_field patientForm.profile_pic class="form-control-file" %}
             </div>
           </div>
           <div class="col-md-6">
@@ -79,21 +91,20 @@
               {% render_field userForm.last_name class="form-control" placeholder="Apellidos" %}
             </div>
             <div class="form-group">
-              {% render_field userForm.password class="form-control" placeholder="Contraseña" %}
+              {% render_field userForm.password class="form-control" placeholder="Contraseña" type="password" %}
             </div>
             <div class="form-group">
               {% render_field patientForm.mobile class="form-control" placeholder="Celular" %}
             </div>
             <div class="form-group">
-              {% render_field patientForm.assignedDoctorId class="form-control" placeholder="Doctor" %}
+              {% render_field patientForm.assignedDoctorId class="form-control" placeholder="Doctor asignado" %}
             </div>
           </div>
         </div>
         <button type="submit" class="btnSubmit">Actualizar</button>
       </div>
     </div>
-  </div>
-</form>
-
+  </form>
+</div>
 
 {% endblock content %}

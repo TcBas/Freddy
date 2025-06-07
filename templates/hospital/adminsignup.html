@@ -47,27 +47,24 @@
       color: #fff;
     }
   </style>
-
 </head>
-
 
 <body>
   {% include "hospital/navbar.html" %}
+  
   <br>
   <br>
   <br>
   <br>
 
+  <!--- Página de registro para el administrador ---------->
 
-
-
-  <!--- Página de registro para el administrador  ---------->
   <form method="post">
     {% csrf_token %}
     <div class="container register-form">
       <div class="form">
         <div class="note">
-          <p>Agregar Nuevo Administrador al Hospital/p>
+          <p>Agregar Nuevo Administrador al Hospital</p>
         </div>
 
         <div class="form-content">
@@ -79,8 +76,8 @@
               <div class="form-group">
                 {% render_field form.username class="form-control" placeholder="Nombre de usuario" %}
               </div>
-
             </div>
+
             <div class="col-md-6">
               <div class="form-group">
                 {% render_field form.last_name class="form-control" placeholder="Apellido" %}
@@ -88,17 +85,16 @@
               <div class="form-group">
                 {% render_field form.password class="form-control" placeholder="Contraseña" %}
               </div>
-
             </div>
           </div>
           <button type="submit" class="btnSubmit">Registrar</button>
-          <div class="text-center">Already have an account? <a href="adminlogin">Inicia sesión aquí</a></div>
+          <div class="text-center">
+            ¿Ya tienes una cuenta? <a href="adminlogin">Inicia sesión aquí</a>
+          </div>
         </div>
       </div>
     </div>
-
   </form>
-  
 
   {% include "hospital/footer.html" %}
 </body>

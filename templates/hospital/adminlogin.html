@@ -5,8 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>LazyCoder || sumit</title>
-
+  <title>Ronny|Sebastian|Sledad</title>
 
   <style type="text/css">
     body {
@@ -52,11 +51,14 @@
 
 <body>
   {% include "hospital/navbar.html" %}
-  <br>
-  <br>
-  <br><br>
 
-  <!--- Página de inicio de sesión para el administrador   ---------->
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <!--- Página de inicio de sesión para el administrador -->
+
   <form method="post">
     {% csrf_token %}
     <div class="container register-form">
@@ -68,30 +70,28 @@
         <div class="form-content">
           <div class="row">
             <div class="col-md-6">
-
               <div class="form-group">
                 {% render_field form.username class="form-control" placeholder="Nombre de usuario" %}
               </div>
-
             </div>
             <div class="col-md-6">
-
               <div class="form-group">
                 {% render_field form.password class="form-control" placeholder="Contraseña" %}
               </div>
-
             </div>
           </div>
-          <button type="submit" class="btnSubmit">Login</button>
-          <div class="text-center">¿No tienes una cuenta? <a href="adminsignup">Regístrate aquí</a></div>
+          <button type="submit" class="btnSubmit">Acceso</button>
+          <div class="text-center">
+            ¿No tienes una cuenta? <a href="adminsignup">Regístrate aquí</a>
+          </div>
         </div>
       </div>
     </div>
-
   </form>
 
-  <br><br><br>
-  
+  <br>
+  <br>
+  <br>
 
   {% include "hospital/footer.html" %}
 </body>
