@@ -1,66 +1,578 @@
-{% extends 'hospital/admin_base.html' %}
-{% block content %}
-
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citas Médicas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 0;
+        }
 
-  <style>
-    a {
-      text-decoration: none;
-    }
-    h6.panel-title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.4rem;
-      color: #337ab7;
-    }
-    .container {
-      margin-top: 80px;
-      max-width: 900px;
-    }
-    table#dev-table {
-      margin-top: 20px;
-    }
-    /* Opcional: colorear filas al pasar el mouse */
-    table#dev-table tbody tr:hover {
-      background-color: #f5f5f5;
-      cursor: pointer;
-    }
-  </style>
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .appointments-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 40px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #0072ff, #8811c5);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(50%); }
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-header i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .table-container {
+            padding: 30px;
+            position: relative;
+        }
+
+        .search-container {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .search-input {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 12px 50px 12px 20px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.3s ease;
+            background: rgba(248, 249, 250, 0.8);
+        }
+
+        .search-input:focus {
+            border-color: #0072ff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 114, 255, 0.25);
+            background: white;
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        .modern-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .modern-table thead {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .modern-table thead th {
+            border: none;
+            padding: 20px 15px;
+            font-weight: 700;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .modern-table thead th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #0072ff, #8811c5);
+        }
+
+        .modern-table tbody tr {
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .modern-table tbody tr:hover {
+            background: linear-gradient(135deg, rgba(0, 114, 255, 0.05), rgba(136, 17, 197, 0.05));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .modern-table tbody td {
+            padding: 20px 15px;
+            border: none;
+            vertical-align: middle;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .doctor-name {
+            font-weight: 600;
+            color: #0072ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .patient-name {
+            font-weight: 500;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .appointment-date {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .description-text {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .no-appointments {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .no-appointments i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0072ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .btn-action {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #0072ff, #8811c5);
+            color: white;
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            border: 2px solid #dee2e6;
+            background: white;
+            color: #6c757d;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            border-color: #0072ff;
+            color: #0072ff;
+            background: rgba(0, 114, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 10px;
+            }
+            
+            .table-container {
+                padding: 20px;
+            }
+            
+            .card-header {
+                padding: 20px;
+            }
+            
+            .card-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+            }
+            
+            .modern-table {
+                font-size: 0.9rem;
+            }
+            
+            .modern-table thead th,
+            .modern-table tbody td {
+                padding: 12px 8px;
+            }
+            
+            .description-text {
+                max-width: 120px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
+<body>
+    <div class="main-container">
+        <div class="appointments-card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <i class="fas fa-calendar-check"></i>
+                <h2>Citas Médicas</h2>
+            </div>
+            
+            <div class="table-container">
+                <!-- Statistics Cards -->
+                <div class="stats-container">
+                    <div class="stat-card animate__animated animate__fadeInLeft">
+                        <div class="stat-number" id="totalAppointments">12</div>
+                        <div class="stat-label">Total Citas</div>
+                    </div>
+                    <div class="stat-card animate__animated animate__fadeInUp">
+                        <div class="stat-number" id="todayAppointments">3</div>
+                        <div class="stat-label">Hoy</div>
+                    </div>
+                    <div class="stat-card animate__animated animate__fadeInRight">
+                        <div class="stat-number" id="thisWeekAppointments">8</div>
+                        <div class="stat-label">Esta Semana</div>
+                    </div>
+                </div>
 
-<div class="container">
-  <div class="panel panel-primary">
-    <div class="panel-heading">
-      <h6 class="panel-title">Citas Médicas</h6>
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-action btn-success-custom">
+                        <i class="fas fa-plus me-2"></i>Nueva Cita
+                    </button>
+                    <button class="btn-action btn-primary-custom">
+                        <i class="fas fa-download me-2"></i>Exportar
+                    </button>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Buscar por doctor, paciente o descripción...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Todas</button>
+                    <button class="filter-btn" data-filter="today">Hoy</button>
+                    <button class="filter-btn" data-filter="week">Esta Semana</button>
+                    <button class="filter-btn" data-filter="month">Este Mes</button>
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table modern-table" id="appointmentsTable">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-user-md me-2"></i>Doctor</th>
+                                <th><i class="fas fa-user me-2"></i>Paciente</th>
+                                <th><i class="fas fa-file-alt me-2"></i>Descripción</th>
+                                <th><i class="fas fa-calendar me-2"></i>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsBody">
+                            <!-- Sample data - replace with Django template tags -->
+                            <tr class="animate__animated animate__fadeInUp">
+                                <td class="doctor-name">
+                                    <i class="fas fa-user-md text-primary"></i>
+                                    Dr. García Pérez
+                                </td>
+                                <td class="patient-name">
+                                    <i class="fas fa-user text-info"></i>
+                                    María López
+                                </td>
+                                <td class="description-text" title="Consulta general de rutina y revisión de medicamentos">
+                                    Consulta general de rutina
+                                </td>
+                                <td>
+                                    <span class="appointment-date">2025-06-08</span>
+                                </td>
+                            </tr>
+                            <tr class="animate__animated animate__fadeInUp">
+                                <td class="doctor-name">
+                                    <i class="fas fa-user-md text-primary"></i>
+                                    Dra. Martínez
+                                </td>
+                                <td class="patient-name">
+                                    <i class="fas fa-user text-info"></i>
+                                    Juan Rodríguez
+                                </td>
+                                <td class="description-text" title="Control post-operatorio de cirugía menor">
+                                    Control post-operatorio
+                                </td>
+                                <td>
+                                    <span class="appointment-date">2025-06-07</span>
+                                </td>
+                            </tr>
+                            <tr class="animate__animated animate__fadeInUp">
+                                <td class="doctor-name">
+                                    <i class="fas fa-user-md text-primary"></i>
+                                    Dr. Fernández
+                                </td>
+                                <td class="patient-name">
+                                    <i class="fas fa-user text-info"></i>
+                                    Ana Jiménez
+                                </td>
+                                <td class="description-text" title="Revisión de análisis de sangre y consulta cardiológica">
+                                    Revisión análisis
+                                </td>
+                                <td>
+                                    <span class="appointment-date">2025-06-09</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- No appointments message (hidden by default) -->
+                <div class="no-appointments d-none" id="noAppointments">
+                    <i class="fas fa-calendar-times"></i>
+                    <h4>No hay citas registradas</h4>
+                    <p>No se encontraron citas médicas que coincidan con los criterios de búsqueda.</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <table class="table table-hover" id="dev-table">
-      <thead>
-        <tr>
-          <th>Nombre del Doctor</th>
-          <th>Nombre del Paciente</th>
-          <th>Descripción</th>
-          <th>Fecha</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for a in appointments %}
-        <tr>
-          <td>{{ a.doctorName }}</td>
-          <td>{{ a.patientName }}</td>
-          <td>{{ a.description }}</td>
-          <td>{{ a.appointmentDate }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="4" class="text-center">No hay citas registradas</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
 
-{% endblock content %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#appointmentsBody tr');
+            let visibleRows = 0;
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                    visibleRows++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no results message
+            const noAppointments = document.getElementById('noAppointments');
+            const table = document.getElementById('appointmentsTable');
+            
+            if (visibleRows === 0) {
+                table.style.display = 'none';
+                noAppointments.classList.remove('d-none');
+            } else {
+                table.style.display = '';
+                noAppointments.classList.add('d-none');
+            }
+        });
+        
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active filter
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const rows = document.querySelectorAll('#appointmentsBody tr');
+                const today = new Date().toISOString().split('T')[0];
+                
+                rows.forEach(row => {
+                    const dateCell = row.querySelector('.appointment-date');
+                    if (!dateCell) return;
+                    
+                    const appointmentDate = dateCell.textContent;
+                    let show = true;
+                    
+                    if (filter === 'today') {
+                        show = appointmentDate === today;
+                    } else if (filter === 'week') {
+                        const weekFromNow = new Date();
+                        weekFromNow.setDate(weekFromNow.getDate() + 7);
+                        show = new Date(appointmentDate) <= weekFromNow;
+                    } else if (filter === 'month') {
+                        const monthFromNow = new Date();
+                        monthFromNow.setMonth(monthFromNow.getMonth() + 1);
+                        show = new Date(appointmentDate) <= monthFromNow;
+                    }
+                    
+                    row.style.display = show ? '' : 'none';
+                });
+            });
+        });
+        
+        // Row click handler
+        document.querySelectorAll('#appointmentsBody tr').forEach(row => {
+            row.addEventListener('click', function() {
+                // Add selection styling
+                document.querySelectorAll('#appointmentsBody tr').forEach(r => r.classList.remove('table-active'));
+                this.classList.add('table-active');
+                
+                // Here you could open a modal or navigate to appointment details
+                console.log('Appointment selected:', this);
+            });
+        });
+        
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate__fadeInUp');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('#appointmentsBody tr').forEach(row => {
+            observer.observe(row);
+        });
+        
+        // Update statistics dynamically
+        function updateStats() {
+            const rows = document.querySelectorAll('#appointmentsBody tr:not([style*="display: none"])');
+            document.getElementById('totalAppointments').textContent = rows.length;
+            
+            // You can add more sophisticated date filtering here
+            document.getElementById('todayAppointments').textContent = '3';
+            document.getElementById('thisWeekAppointments').textContent = '8';
+        }
+        
+        updateStats();
+    </script>
+</body>
+</html>

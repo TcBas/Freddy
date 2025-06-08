@@ -1,74 +1,205 @@
 {% extends 'hospital/admin_base.html' %}
 {% load static %}
 {% block content %}
-{%include 'hospital/admin_dashboard_cards.html'%}
-<br><br><br><br>
-<div class="container">
-  <div class="row">
-    <div class="panel panel-primary col-md-5" style="margin-left:2%;">
-      <div class="panel-heading" style="text-align:center;">
-        <h6 class="panel-title">Doctores recientes</h6>
+{% include 'hospital/admin_dashboard_cards.html' %}
+
+<div class="container py-4">
+  <!-- Título de sección -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="text-primary fw-bold">
+        <i class="fas fa-chart-line me-2"></i>Resumen de Actividad Reciente
+      </h2>
+      <hr class="mt-2 mb-0">
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Panel de Doctores -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white border-bottom-0 d-flex justify-content-between align-items-center py-3">
+          <h5 class="card-title mb-0 text-primary">
+            <i class="fas fa-user-md me-2"></i>Doctores Recientes
+          </h5>
+          <span class="badge bg-primary rounded-pill">{{ doctors|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3">Nombre</th>
+                  <th>Departamento</th>
+                  <th>Contacto</th>
+                  <th class="text-center">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for d in doctors %}
+                <tr>
+                  <td class="ps-3">
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-sm me-2 bg-light rounded-circle">
+                        <span class="fw-bold text-secondary">{{ d.get_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="fw-medium mb-0">{{ d.get_name }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="text-nowrap">{{ d.department }}</span>
+                  </td>
+                  <td>
+                    <a href="tel:{{ d.mobile }}" class="text-decoration-none">
+                      <i class="fas fa-phone-alt text-muted me-1"></i>{{ d.mobile }}
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    {% if d.status %}
+                      <span class="badge bg-success-subtle text-success px-2 py-1">
+                        <i class="fas fa-check-circle me-1"></i>Permanente
+                      </span>
+                    {% else %}
+                      <span class="badge bg-warning-subtle text-warning px-2 py-1">
+                        <i class="fas fa-clock me-1"></i>En espera
+                      </span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-muted">
+                    <i class="fas fa-info-circle me-2"></i>No hay doctores recientes
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top-0 text-end py-2">
+          <a href="/admin-doctor" class="btn btn-sm btn-outline-primary">
+            Ver todos los doctores <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
       </div>
-      <table class="table table-hover" id="dev-table">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Departmento</th>
-            <th>Celular</th>
-            <th>estado</th>
-
-          </tr>
-        </thead>
-        {% for d in doctors %}
-        <tr>
-          <td> {{d.get_name}}</td>
-          <td>{{d.department}}</td>
-          <td>{{d.mobile}}</td>
-          {%if d.status%}
-          <td> <span class="label label-primary">Permanente</span></td>
-          {% else %}
-          <td> <span class="label label-success">En espera</span></td>
-          {% endif %}
-
-        </tr>
-        {% endfor %}
-      </table>
     </div>
 
-    <div class="panel panel-primary col-md-5" style="margin-left:5%;">
-      <div class="panel-heading" style="text-align:center;">
-        <h6 class="panel-title">Paciente reciente</h6>
+    <!-- Panel de Pacientes -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white border-bottom-0 d-flex justify-content-between align-items-center py-3">
+          <h5 class="card-title mb-0 text-primary">
+            <i class="fas fa-hospital-user me-2"></i>Pacientes Recientes
+          </h5>
+          <span class="badge bg-primary rounded-pill">{{ patients|length }}</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3">Nombre</th>
+                  <th>Síntomas</th>
+                  <th>Contacto</th>
+                  <th class="text-center">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in patients %}
+                <tr>
+                  <td class="ps-3">
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-sm me-2 bg-light rounded-circle">
+                        <span class="fw-bold text-secondary">{{ p.get_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="fw-medium mb-0">{{ p.get_name }}</p>
+                        <small class="text-muted">{{ p.address|truncatechars:20 }}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="text-truncate d-inline-block" style="max-width: 150px;" title="{{ p.symptoms }}">
+                      {{ p.symptoms }}
+                    </span>
+                  </td>
+                  <td>
+                    <a href="tel:{{ p.mobile }}" class="text-decoration-none">
+                      <i class="fas fa-phone-alt text-muted me-1"></i>{{ p.mobile }}
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    {% if p.status %}
+                      <span class="badge bg-success-subtle text-success px-2 py-1">
+                        <i class="fas fa-check-circle me-1"></i>Admitido
+                      </span>
+                    {% else %}
+                      <span class="badge bg-warning-subtle text-warning px-2 py-1">
+                        <i class="fas fa-clock me-1"></i>En espera
+                      </span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-muted">
+                    <i class="fas fa-info-circle me-2"></i>No hay pacientes recientes
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top-0 text-end py-2">
+          <a href="/admin-patient" class="btn btn-sm btn-outline-primary">
+            Ver todos los pacientes <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
       </div>
-      <table class="table table-hover" id="dev-table">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Sintomas</th>
-            <th>Celular</th>
-            <th>Direccion</th>
-            <th>Estado</th>
+    </div>
+  </div>
 
-          </tr>
-        </thead>
-        {% for p in patients %}
-        <tr>
-          <td> {{p.get_name}}</td>
-          <td>{{p.symptoms}}</td>
-          <td>{{p.mobile}}</td>
-          <td>{{p.address}}</td>
-          {%if p.status%}
-          <td> <span class="label label-primary">Admittido</span></td>
-          {% else %}
-          <td> <span class="label label-success">En espera</span></td>
-          {% endif %}
-
-        </tr>
-        {% endfor %}
-      </table>
+  <!-- Sección de acciones rápidas -->
+  <div class="row mt-4 g-4">
+    <div class="col-12">
+      <div class="card bg-light border-0">
+        <div class="card-body">
+          <h5 class="card-title"><i class="fas fa-bolt me-2"></i>Acciones rápidas</h5>
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <a href="/admin-doctor-pending" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-user-md me-1"></i>Aprobar doctores
+            </a>
+            <a href="/admin-patient-pending" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-procedures me-1"></i>Admitir pacientes
+            </a>
+            <a href="/admin-appointment" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-calendar-check me-1"></i>Gestionar citas
+            </a>
+            <a href="/admin-view-doctor" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-address-card me-1"></i>Ver doctores
+            </a>
+            <a href="/admin-view-patient" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-address-card me-1"></i>Ver pacientes
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-
-
+<!-- Scripts para el funcionamiento de tooltips y otras funcionalidades -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Inicialización de tooltips para textos truncados
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'))
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+  });
+</script>
 {% endblock content %}

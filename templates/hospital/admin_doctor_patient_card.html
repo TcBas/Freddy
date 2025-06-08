@@ -1,104 +1,326 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="es">
 
 <head>
   <meta charset="UTF-8" />
-  <title>Panel de Roles</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Roles - Sistema Médico</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
       padding: 20px;
+      position: relative;
+    }
+
+    /* Header con botón de logout */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .header h1 {
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 300;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      color: white;
+      text-decoration: none;
     }
 
     .grid-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
       max-width: 960px;
-      margin: auto;
+      margin: 0 auto;
     }
 
     .card {
-      background: #fff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
       overflow: hidden;
       text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
 
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
     }
 
-    .card img {
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card-image {
       width: 100%;
-      height: auto;
-      display: block;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-image {
+      transform: scale(1.1);
+    }
+
+    .card-content {
+      padding: 25px;
     }
 
     .title {
-      color: #666;
-      font-size: 20px;
+      color: #333;
+      font-size: 24px;
       margin: 15px 0;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
+    }
+
+    .description {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.5;
     }
 
     .btn-link {
-      display: inline-block;
-      padding: 12px 0;
-      width: 100%;
-      background-color: #007bff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      font-size: 18px;
+      font-size: 16px;
+      font-weight: 600;
       text-decoration: none;
-      border-radius: 0 0 8px 8px;
-      transition: background-color 0.3s ease;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .btn-link:hover,
     .btn-link:focus {
-      background-color: #0056b3;
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
       outline: none;
       text-decoration: none;
       color: white;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    /* Iconos específicos para cada rol */
+    .admin-icon { color: #e74c3c; }
+    .doctor-icon { color: #3498db; }
+    .patient-icon { color: #2ecc71; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .grid-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
     }
+
+    /* Animaciones adicionales */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
   </style>
 </head>
 
 <body>
+  <!-- Header con título y botón de logout -->
+  <div class="header">
+    <h1><i class="fas fa-user-cog"></i> Panel de Roles</h1>
+    <a href="/logout" class="logout-btn" onclick="return confirmarLogout()">
+      <i class="fas fa-sign-out-alt"></i>
+      Cerrar Sesión
+    </a>
+  </div>
 
   <div class="grid-container">
+    <!-- Card Administrador -->
     <div class="card">
-      <img src="{% static 'images/admin.png' %}" alt="Administrador" />
-      <p class="title">Administrador</p>
-      <a href="/adminclick" class="btn-link" aria-label="Ver administrador">Ver</a>
+      <img src="static\images\admin.png" alt="Administrador" class="card-image" />
+      <div class="card-content">
+        <p class="title">
+          <i class="fas fa-user-shield admin-icon"></i>
+          Administrador
+        </p>
+        <p class="description">
+          Gestiona el sistema, usuarios y configuraciones generales de la plataforma médica.
+        </p>
+        <a href="/adminclick" class="btn-link" aria-label="Acceder como administrador">
+          <i class="fas fa-arrow-right"></i>
+          Acceder
+        </a>
+      </div>
     </div>
 
+    <!-- Card Doctor -->
     <div class="card">
-      <img src="{% static 'images/doctor.png' %}" alt="Doctor" />
-      <p class="title">Doctor</p>
-      <a href="/doctorclick" class="btn-link" aria-label="Ver doctor">Ver</a>
+      <img src="static\images\doctor.png" alt="Doctor" class="card-image" />
+      <div class="card-content">
+        <p class="title">
+          <i class="fas fa-user-md doctor-icon"></i>
+          Doctor
+        </p>
+        <p class="description">
+          Accede a historiales médicos, diagnósticos y gestiona las consultas de pacientes.
+        </p>
+        <a href="/doctorclick" class="btn-link" aria-label="Acceder como doctor">
+          <i class="fas fa-arrow-right"></i>
+          Acceder
+        </a>
+      </div>
     </div>
 
+    <!-- Card Paciente -->
     <div class="card">
-      <img src="{% static 'images/patient.jpg' %}" alt="Paciente" />
-      <p class="title">Paciente</p>
-      <a href="/patientclick" class="btn-link" aria-label="Ver paciente">Ver</a>
+      <img src="static\images\patient.jpg" alt="Paciente" class="card-image" />
+      <div class="card-content">
+        <p class="title">
+          <i class="fas fa-user patient-icon"></i>
+          Paciente
+        </p>
+        <p class="description">
+          Consulta tu historial médico, citas programadas y comunícate con tu doctor.
+        </p>
+        <a href="/patientclick" class="btn-link" aria-label="Acceder como paciente">
+          <i class="fas fa-arrow-right"></i>
+          Acceder
+        </a>
+      </div>
     </div>
   </div>
 
+  <script>
+    // Función para confirmar el logout
+    function confirmarLogout() {
+      return confirm('¿Estás seguro de que deseas cerrar sesión?');
+    }
+
+    // Funcionalidad adicional para manejar el logout con AJAX si es necesario
+    function cerrarSesion() {
+      // Opción 1: Redirect simple
+      window.location.href = '/logout';
+      
+      // Opción 2: AJAX para logout (descomenta si necesitas AJAX)
+      /*
+      fetch('/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/login';
+        } else {
+          alert('Error al cerrar sesión');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error de conexión');
+      });
+      */
+    }
+
+    // Animación suave al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 100);
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -1,110 +1,389 @@
-{% extends 'hospital/admin_base.html' %}
-{% load widget_tweaks %}
-{% block content %}
-
-<style>
-  a {
-    text-decoration: none !important;
-  }
-  .note {
-    text-align: center;
-    height: 80px;
-    background: linear-gradient(90deg, #0072ff, #8811c5);
-    color: #fff;
-    font-weight: 700;
-    line-height: 80px;
-    border-radius: 0.5rem 0.5rem 0 0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  }
-  .form-content {
-    padding: 30px;
-    border: 1px solid #ced4da;
-    border-top: none;
-    border-radius: 0 0 0.5rem 0.5rem;
-    background-color: #fff;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
-  }
-  .form-control {
-    border-radius: 1.5rem !important;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: 1.5px solid #ced4da !important;
-  }
-  .form-control:focus {
-    border-color: #007bff !important;
-    box-shadow: 0 0 5px rgba(0,123,255,0.5) !important;
-  }
-  .form-control-file {
-    border-radius: 0.5rem !important;
-  }
-  .btnSubmit {
-    border: none;
-    border-radius: 1.5rem;
-    padding: 12px 40px;
-    width: 100%;
-    cursor: pointer;
-    background: linear-gradient(90deg, #0072ff, #8811c5);
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.1rem;
-    box-shadow: 0 4px 15px rgba(136,17,197,0.6);
-    transition: background 0.4s ease;
-  }
-  .btnSubmit:hover {
-    background: linear-gradient(90deg, #005ecb, #5b0e8b);
-  }
-  .register-form {
-    margin-top: 40px;
-    margin-bottom: 80px;
-  }
-</style>
-
-<div class="container register-form">
-  <form method="post" enctype="multipart/form-data" novalidate>
-    {% csrf_token %}
-    <div class="form">
-      <div class="note">
-        Actualizar Datos del Paciente
-      </div>
-      <div class="form-content">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              {% render_field userForm.first_name class="form-control" placeholder="Nombre" %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Datos del Paciente</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        a {
+            text-decoration: none !important;
+        }
+        
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #0072ff, #8811c5);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(50%); }
+        }
+        
+        .form-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-header i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-content {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(248, 249, 250, 0.8);
+        }
+        
+        .form-control:focus {
+            border-color: #0072ff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 114, 255, 0.25);
+            background: white;
+            transform: translateY(-2px);
+        }
+        
+        .form-control-file {
+            border: 2px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            background: rgba(248, 249, 250, 0.8);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .form-control-file:hover {
+            border-color: #0072ff;
+            background: rgba(0, 114, 255, 0.05);
+        }
+        
+        .file-upload-icon {
+            font-size: 2rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .file-upload-text {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #0072ff, #8811c5);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 50px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 114, 255, 0.3);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 114, 255, 0.4);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+        
+        .input-group-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 3;
+        }
+        
+        .form-floating {
+            position: relative;
+        }
+        
+        .form-floating label {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            color: #6c757d;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: white;
+            padding: 0 5px;
+        }
+        
+        .form-floating input:focus + label,
+        .form-floating input:not(:placeholder-shown) + label {
+            top: 0;
+            font-size: 0.85rem;
+            color: #0072ff;
+        }
+        
+        .alert {
+            border-radius: 15px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+            color: #0c5460;
+        }
+        
+        @media (max-width: 768px) {
+            .form-content {
+                padding: 20px;
+            }
+            
+            .form-header {
+                padding: 20px;
+            }
+            
+            .form-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <i class="fas fa-user-edit"></i>
+                <h2>Actualizar Datos del Paciente</h2>
             </div>
-            <div class="form-group">
-              {% render_field userForm.username class="form-control" placeholder="Nombre de Usuario" %}
+            
+            <div class="form-content">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Complete los campos necesarios para actualizar la información del paciente.
+                </div>
+                
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group form-floating">
+                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Nombre" required>
+                                <label for="first_name">Nombre</label>
+                                <i class="fas fa-user input-group-icon"></i>
+                            </div>
+                            
+                            <div class="form-group form-floating">
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Nombre de Usuario" required>
+                                <label for="username">Nombre de Usuario</label>
+                                <i class="fas fa-at input-group-icon"></i>
+                            </div>
+                            
+                            <div class="form-group form-floating">
+                                <textarea class="form-control" id="address" name="address" placeholder="Dirección" rows="3" style="min-height: 80px;"></textarea>
+                                <label for="address">Dirección</label>
+                                <i class="fas fa-home input-group-icon"></i>
+                            </div>
+                            
+                            <div class="form-group form-floating">
+                                <textarea class="form-control" id="symptoms" name="symptoms" placeholder="Síntomas" rows="3" style="min-height: 80px;"></textarea>
+                                <label for="symptoms">Síntomas</label>
+                                <i class="fas fa-notes-medical input-group-icon"></i>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-control-file">
+                                    <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                                    <div class="file-upload-text">
+                                        <strong>Seleccionar foto de perfil</strong><br>
+                                        <small>Formatos permitidos: JPG, PNG, GIF</small>
+                                    </div>
+                                    <input type="file" class="d-none" id="profile_pic" name="profile_pic" accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group form-floating">
+                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Apellidos" required>
+                                <label for="last_name">Apellidos</label>
+                                <i class="fas fa-user input-group-icon"></i>
+                            </div>
+                            
+                            <div class="form-group form-floating">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
+                                <label for="password">Contraseña</label>
+                                <i class="fas fa-lock input-group-icon toggle-password" onclick="togglePassword()"></i>
+                            </div>
+                            
+                            <div class="form-group form-floating">
+                                <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Celular" required>
+                                <label for="mobile">Celular</label>
+                                <i class="fas fa-phone input-group-icon"></i>
+                            </div>
+                            
+                            <div class="form-group form-floating">
+                                <select class="form-control" id="assignedDoctorId" name="assignedDoctorId" required>
+                                    <option value="">Seleccionar Doctor</option>
+                                    <option value="1">Dr. García Pérez</option>
+                                    <option value="2">Dra. Martínez López</option>
+                                    <option value="3">Dr. Rodríguez Santos</option>
+                                    <option value="4">Dra. Fernández Castro</option>
+                                </select>
+                                <label for="assignedDoctorId">Doctor Asignado</label>
+                                <i class="fas fa-user-md input-group-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save me-2"></i>
+                            Actualizar Datos
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-              {% render_field patientForm.address class="form-control" placeholder="Dirección" %}
-            </div>
-            <div class="form-group">
-              {% render_field patientForm.symptoms class="form-control" placeholder="Síntomas" %}
-            </div>
-            <div class="form-group">
-              {% render_field patientForm.profile_pic class="form-control-file" %}
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              {% render_field userForm.last_name class="form-control" placeholder="Apellidos" %}
-            </div>
-            <div class="form-group">
-              {% render_field userForm.password class="form-control" placeholder="Contraseña" type="password" %}
-            </div>
-            <div class="form-group">
-              {% render_field patientForm.mobile class="form-control" placeholder="Celular" %}
-            </div>
-            <div class="form-group">
-              {% render_field patientForm.assignedDoctorId class="form-control" placeholder="Doctor asignado" %}
-            </div>
-          </div>
         </div>
-        <button type="submit" class="btnSubmit">Actualizar</button>
-      </div>
     </div>
-  </form>
-</div>
-
-{% endblock content %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-lock');
+                toggleIcon.classList.add('fa-unlock');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-unlock');
+                toggleIcon.classList.add('fa-lock');
+            }
+        }
+        
+        // File upload functionality
+        document.querySelector('.form-control-file').addEventListener('click', function() {
+            document.getElementById('profile_pic').click();
+        });
+        
+        document.getElementById('profile_pic').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.querySelector('.file-upload-text').innerHTML = `
+                    <strong>Archivo seleccionado:</strong><br>
+                    <small>${fileName}</small>
+                `;
+            }
+        });
+        
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const requiredFields = document.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#dc3545';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#28a745';
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Por favor, complete todos los campos requeridos.');
+            }
+        });
+        
+        // Smooth animations
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

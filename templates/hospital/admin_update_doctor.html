@@ -1,96 +1,463 @@
 {% extends 'hospital/admin_base.html' %}
 {% load widget_tweaks %}
-{% block content %}
 
-<head>
-  <style media="screen">
-    a:link {
-      text-decoration: none;
-    }
+{% block extra_css %}
+<style>
+  :root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --shadow-light: 0 10px 30px rgba(0,0,0,0.1);
+    --shadow-medium: 0 15px 35px rgba(0,0,0,0.15);
+    --shadow-heavy: 0 20px 40px rgba(0,0,0,0.2);
+  }
 
-    .note {
-      text-align: center;
-      height: 80px;
-      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
-      color: #fff;
-      font-weight: bold;
-      line-height: 80px;
-    }
+  body {
+    background: var(--primary-gradient);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
 
+  .navbar-custom {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--shadow-light);
+    margin-bottom: 30px;
+  }
+
+  .btn-logout {
+    background: var(--secondary-gradient);
+    border: none;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+    color: white;
+    text-decoration: none;
+  }
+
+  .register-form {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .form-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-heavy);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .form-header {
+    background: var(--primary-gradient);
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .form-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: float 20s linear infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  .form-header h2 {
+    color: white;
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .form-header .icon {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .form-content {
+    padding: 40px;
+  }
+
+  .form-group {
+    margin-bottom: 25px;
+    position: relative;
+  }
+
+  .form-control {
+    border: 2px solid #e1e8ed !important;
+    border-radius: 15px !important;
+    padding: 15px 50px 15px 20px !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+  }
+
+  .form-control:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    background: white !important;
+    transform: translateY(-2px);
+  }
+
+  .input-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #667eea;
+    font-size: 1.1rem;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .form-control-file {
+    border: 2px dashed #667eea !important;
+    border-radius: 15px !important;
+    padding: 20px !important;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: rgba(102, 126, 234, 0.05) !important;
+  }
+
+  .form-control-file:hover {
+    background: rgba(102, 126, 234, 0.1) !important;
+    border-color: #5a67d8 !important;
+  }
+
+  .btnSubmit {
+    background: var(--success-gradient) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 18px 50px !important;
+    width: 100% !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+    cursor: pointer !important;
+    transition: all 0.4s ease !important;
+    box-shadow: var(--shadow-medium) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 20px;
+  }
+
+  .btnSubmit:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: var(--shadow-heavy) !important;
+    background: var(--primary-gradient) !important;
+  }
+
+  .alert {
+    border-radius: 15px;
+    border: none;
+    box-shadow: var(--shadow-light);
+    margin-bottom: 20px;
+  }
+
+  .floating-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .floating-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: floatUpDown 6s ease-in-out infinite;
+  }
+
+  .floating-circle:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+  }
+
+  .floating-circle:nth-child(2) {
+    width: 120px;
+    height: 120px;
+    top: 60%;
+    right: 10%;
+    animation-delay: 2s;
+  }
+
+  .floating-circle:nth-child(3) {
+    width: 60px;
+    height: 60px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 4s;
+  }
+
+  @keyframes floatUpDown {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+
+  @media (max-width: 768px) {
     .form-content {
-      padding: 5%;
-      border: 1px solid #ced4da;
-      margin-bottom: 2%;
+      padding: 30px 20px;
     }
-
+    
+    .form-header h2 {
+      font-size: 1.8rem;
+    }
+    
     .form-control {
-      border-radius: 1.5rem;
+      padding: 12px 40px 12px 15px !important;
     }
+  }
+</style>
+{% endblock %}
 
-    .btnSubmit {
-      border: none;
-      border-radius: 1.5rem;
-      padding: 1%;
-      width: 20%;
-      cursor: pointer;
-      background: #0062cc;
-      color: #fff;
-    }
+{% block content %}
+<!-- Elementos flotantes decorativos -->
+<div class="floating-elements">
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+</div>
 
-    .menu {
-      top: 50px;
-    }
-  </style>
+<!-- Navbar con botón de cerrar sesión -->
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'admin-dashboard' %}">
+      <i class="fas fa-hospital-alt"></i> Sistema Hospitalario
+    </a>
+    <div class="navbar-nav ms-auto">
+      <a href="{% url 'adminlogout' %}" class="btn btn-logout">
+        <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+      </a>
+    </div>
+  </div>
+</nav>
 
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-</head>
-<br><br>
-<!------ página de actualización para doctor por administrador (sumit)  ---------->
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="container register-form">
-    <div class="form">
-      <div class="note">
-        <p>Actualizar Datos del Doctor</p>
+<div class="container register-form">
+  <!-- Mensajes de Django -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-      <div class="form-content">
+    {% endfor %}
+  {% endif %}
+  
+  <div class="form-card">
+    <div class="form-header">
+      <div class="icon">
+        <i class="fas fa-user-md"></i>
+      </div>
+      <h2>Actualizar Datos del Doctor</h2>
+    </div>
+    
+    <div class="form-content">
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        
         <div class="row">
           <div class="col-md-6">
             <div class="form-group">
               {% render_field userForm.first_name class="form-control" placeholder="Nombre" %}
+              <i class="fas fa-user input-icon"></i>
+              {% if userForm.first_name.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in userForm.first_name.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
+            
             <div class="form-group">
               {% render_field userForm.username class="form-control" placeholder="Nombre de Usuario" %}
+              <i class="fas fa-at input-icon"></i>
+              {% if userForm.username.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in userForm.username.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
+            
             <div class="form-group">
               {% render_field doctorForm.mobile class="form-control" placeholder="Celular" %}
+              <i class="fas fa-phone input-icon"></i>
+              {% if doctorForm.mobile.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in doctorForm.mobile.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
+            
             <div class="form-group">
-              {% render_field doctorForm.department class="form-control" placeholder="Departmento" %}
+              {% render_field doctorForm.department class="form-control" %}
+              <i class="fas fa-stethoscope input-icon"></i>
+              {% if doctorForm.department.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in doctorForm.department.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
           </div>
+
           <div class="col-md-6">
             <div class="form-group">
               {% render_field userForm.last_name class="form-control" placeholder="Apellido" %}
+              <i class="fas fa-user input-icon"></i>
+              {% if userForm.last_name.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in userForm.last_name.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
+            
             <div class="form-group">
-              {% render_field userForm.password class="form-control" placeholder="Contraseña" %}
+              {% render_field userForm.password class="form-control" placeholder="Nueva Contraseña (opcional)" type="password" %}
+              <i class="fas fa-lock input-icon"></i>
+              <small class="text-muted">Dejar vacío para mantener la contraseña actual</small>
+              {% if userForm.password.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in userForm.password.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
+            
             <div class="form-group">
-              {% render_field doctorForm.address class="form-control" placeholder="Direccion" %}
+              {% render_field doctorForm.address class="form-control" placeholder="Dirección" rows="3" %}
+              <i class="fas fa-map-marker-alt input-icon"></i>
+              {% if doctorForm.address.errors %}
+                <div class="text-danger mt-1">
+                  {% for error in doctorForm.address.errors %}
+                    <small>{{ error }}</small>
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
+            
             <div class="form-group">
-              {% render_field doctorForm.profile_pic class="form-control" placeholder="Foto de Perfil" %}
+              <div class="form-control-file">
+                <i class="fas fa-camera mb-2" style="font-size: 2rem; color: #667eea;"></i>
+                <br>
+                {% render_field doctorForm.profile_pic class="d-none" id="profilePic" %}
+                <label for="id_profile_pic" class="btn btn-outline-primary">
+                  <i class="fas fa-upload me-2"></i>Seleccionar Foto de Perfil
+                </label>
+                <div class="mt-2 text-muted">
+                  <small>Formatos: JPG, PNG, GIF (Max: 5MB)</small>
+                </div>
+                {% if doctorForm.profile_pic.errors %}
+                  <div class="text-danger mt-1">
+                    {% for error in doctorForm.profile_pic.errors %}
+                      <small>{{ error }}</small>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
             </div>
           </div>
         </div>
-        <button type="submit" class="btnSubmit">Actualizar</button>
-      </div>
+
+        <button type="submit" class="btnSubmit">
+          <i class="fas fa-save me-2"></i>Actualizar Datos
+        </button>
+      </form>
     </div>
   </div>
-</form>
+</div>
 
+<script>
+// Funcionalidad para el archivo de imagen
+document.addEventListener('DOMContentLoaded', function() {
+  const profilePicInput = document.getElementById('id_profile_pic');
+  if (profilePicInput) {
+    profilePicInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const label = e.target.nextElementSibling;
+        if (label) {
+          label.innerHTML = `<i class="fas fa-check me-2"></i>${file.name}`;
+          label.classList.remove('btn-outline-primary');
+          label.classList.add('btn-success');
+        }
+      }
+    });
+  }
+
+  // Efectos de animación en los inputs
+  const inputs = document.querySelectorAll('.form-control');
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      this.parentElement.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+      this.parentElement.classList.remove('focused');
+    });
+  });
+
+  // Animación del botón de envío
+  const form = document.querySelector('form');
+  if (form) {
+    form.addEventListener('submit', function() {
+      const submitBtn = document.querySelector('.btnSubmit');
+      const originalText = submitBtn.innerHTML;
+      
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Actualizando...';
+      submitBtn.disabled = true;
+      
+      // Restaurar el botón después de 3 segundos si no hay redirección
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }, 3000);
+    });
+  }
+});
+</script>
 
 {% endblock content %}

@@ -1,132 +1,335 @@
 {% extends 'hospital/admin_base.html' %}
-{% load static %}
+{% load widget_tweaks %}
 {% block content %}
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
 
-  <!-- Estilos externos -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet">
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-  <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #e3f2fd, #fff);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
     }
 
-    a {
-      text-decoration: none !important;
-      color: inherit;
-    }
-
-    h6 {
-      color: white;
-      font-weight: 600;
-    }
-
-    .order-card {
+    .note {
+      text-align: center;
+      height: 80px;
+      background: linear-gradient(135deg, #11998e, #38ef7d);
       color: #fff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border-radius: 15px;
-      overflow: hidden;
+      font-weight: 700;
+      line-height: 80px;
+      font-size: 1.6rem;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+      letter-spacing: 1px;
     }
 
-    .order-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    .card .card-block {
-      padding: 30px;
-    }
-
-    .bg-c-blue {
-      background: linear-gradient(45deg, #1e88e5, #6ab7ff);
-    }
-
-    .bg-c-green {
-      background: linear-gradient(45deg, #43cea2, #185a9d);
-    }
-
-    .bg-c-yellow {
-      background: linear-gradient(45deg, #f7971e, #ffd200);
-    }
-
-    .order-card i {
-      font-size: 35px;
-      transition: transform 0.3s ease;
-    }
-
-    .order-card:hover i {
-      transform: scale(1.2);
-    }
-
-    .text-right {
+    .register-form {
+      margin-top: 40px;
+      margin-bottom: 40px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: center;
+      animation: fadeInUp 0.8s ease-out;
     }
 
-    .container {
-      margin-top: 80px;
-      margin-bottom: 80px;
+    .form {
+      background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 900px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .form:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-content {
+      padding: 50px 40px;
+    }
+
+    .form-control {
+      border-radius: 25px;
+      padding: 12px 20px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08);
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      background: #ffffff;
+      transform: scale(1.02);
+    }
+
+    .form-control[type="file"] {
+      padding: 10px 15px;
+      background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+      border: 2px dashed #667eea;
+    }
+
+    .form-control[type="file"]:hover {
+      border-color: #764ba2;
+      background: linear-gradient(145deg, #e9ecef, #f8f9fa);
+    }
+
+    .form-control[type="file"]::file-selector-button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 15px;
+      margin-right: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .form-control[type="file"]::file-selector-button:hover {
+      background: linear-gradient(135deg, #764ba2, #667eea);
+      transform: scale(1.05);
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-group::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 25px;
+      padding: 15px 40px;
+      width: 100%;
+      max-width: 250px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.4s ease;
+      margin-top: 30px;
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btnSubmit:hover {
+      background: linear-gradient(135deg, #764ba2, #667eea);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+    }
+
+    .btnSubmit:active {
+      transform: translateY(-1px);
+    }
+
+    .menu {
+      top: 50px;
+    }
+
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-group {
+      animation: fadeInLeft 0.6s ease-out;
+      animation-fill-mode: both;
+    }
+
+    .col-md-6:nth-child(1) .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .col-md-6:nth-child(1) .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .col-md-6:nth-child(1) .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .col-md-6:nth-child(1) .form-group:nth-child(4) { animation-delay: 0.4s; }
+    .col-md-6:nth-child(1) .form-group:nth-child(5) { animation-delay: 0.5s; }
+    .col-md-6:nth-child(2) .form-group:nth-child(1) { animation-delay: 0.15s; }
+    .col-md-6:nth-child(2) .form-group:nth-child(2) { animation-delay: 0.25s; }
+    .col-md-6:nth-child(2) .form-group:nth-child(3) { animation-delay: 0.35s; }
+    .col-md-6:nth-child(2) .form-group:nth-child(4) { animation-delay: 0.45s; }
+
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Efectos adicionales */
+    .note p {
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .text-center {
+      animation: fadeIn 1s ease-out 0.7s both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Separador visual entre columnas */
+    .row {
+      position: relative;
+    }
+
+    .row::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, #667eea, transparent);
+      transform: translateX(-50%);
+      opacity: 0.3;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form {
+        margin: 0 15px;
+      }
+      
+      .form-content {
+        padding: 40px 30px;
+      }
+      
+      .note {
+        font-size: 1.3rem;
+        height: 70px;
+        line-height: 70px;
+      }
+
+      .col-md-6 {
+        margin-bottom: 20px;
+      }
+
+      .row::before {
+        display: none;
+      }
+    }
+
+    /* Efecto especial para el campo de síntomas */
+    .form-control[placeholder="Síntomas"] {
+      min-height: 80px;
+      resize: vertical;
+      padding-top: 15px;
+    }
+
+    /* Indicadores de estado para diferentes tipos de campos */
+    .form-group:has(.form-control[type="file"]) {
+      border-left: 3px solid #667eea;
+      padding-left: 10px;
+      background: rgba(102, 126, 234, 0.05);
+      border-radius: 10px;
+    }
+
+    .form-group:has(.form-control[placeholder="Síntomas"]) {
+      border-left: 3px solid #38ef7d;
+      padding-left: 10px;
+      background: rgba(56, 239, 125, 0.05);
+      border-radius: 10px;
+    }
+
+    /* Mejora visual para campos select */
+    select.form-control {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 12px center;
+      background-repeat: no-repeat;
+      background-size: 16px 12px;
+      padding-right: 40px;
     }
   </style>
+
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 </head>
 
-<div class="container">
-  <div class="row">
+<br><br><br>
 
-    <!-- Ver Citas -->
-    <div class="col-md-4 mb-4">
-      <div class="card bg-c-blue order-card">
-        <div class="card-block">
-          <a href="/admin-view-appointment">
-            <h6 class="mb-4">Ver Citas</h6>
-            <div class="text-right">
-              <span>Gestión</span>
-              <i class="fas fa-calendar"></i>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="container register-form">
+    <div class="form">
+      <div class="note">
+        <p>Admitir Paciente al Hospital</p>
+      </div>
+      <div class="form-content">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              {% render_field userForm.first_name class="form-control" placeholder="Nombre" %}
             </div>
-          </a>
+            <div class="form-group">
+              {% render_field userForm.username class="form-control" placeholder="Nombre de Usuario" %}
+            </div>
+            <div class="form-group">
+              {% render_field patientForm.address class="form-control" placeholder="Dirección" %}
+            </div>
+            <div class="form-group">
+              {% render_field patientForm.symptoms class="form-control" placeholder="Síntomas" %}
+            </div>
+            <div class="form-group">
+              {% render_field patientForm.profile_pic required="required" class="form-control" placeholder="Foto de Perfil" %}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              {% render_field userForm.last_name class="form-control" placeholder="Apellido" %}
+            </div>
+            <div class="form-group">
+              {% render_field userForm.password class="form-control" placeholder="Contraseña" %}
+            </div>
+            <div class="form-group">
+              {% render_field patientForm.mobile class="form-control" placeholder="Celular" %}
+            </div>
+            <div class="form-group">
+              {% render_field patientForm.assignedDoctorId class="form-control" placeholder="Doctor Asignado" %}
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btnSubmit">Admitir Paciente</button>
         </div>
       </div>
     </div>
-
-    <!-- Registrar Cita -->
-    <div class="col-md-4 mb-4">
-      <div class="card bg-c-green order-card">
-        <div class="card-block">
-          <a href="/admin-add-appointment">
-            <h6 class="mb-4">Registrar Cita</h6>
-            <div class="text-right">
-              <span>Nuevo</span>
-              <i class="fas fa-book-medical"></i>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Aprobar Cita -->
-    <div class="col-md-4 mb-4">
-      <div class="card bg-c-yellow order-card">
-        <div class="card-block">
-          <a href="/admin-approve-appointment">
-            <h6 class="mb-4">Aprobar Cita</h6>
-            <div class="text-right">
-              <span>Autorización</span>
-              <i class="fas fa-check-circle"></i>
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-
   </div>
-</div>
+</form>
 
 {% endblock content %}

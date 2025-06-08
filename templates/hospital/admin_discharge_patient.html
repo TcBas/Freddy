@@ -1,52 +1,396 @@
 {% extends 'hospital/admin_base.html' %}
 {% block content %}
 
-<head>
-  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-  <style media="screen">
-    a:link {
-      text-decoration: none;
+<style>
+  :root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --light-bg: #ecf0f1;
+    --white: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+  }
+
+  a:link, a:visited {
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .container {
+    margin-top: 40px;
+    padding: 20px;
+  }
+
+  .page-header {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: var(--white);
+    padding: 30px;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+    box-shadow: var(--shadow);
+    margin-bottom: 0;
+  }
+
+  .page-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .page-header .subtitle {
+    margin-top: 10px;
+    opacity: 0.9;
+    font-size: 1.1rem;
+  }
+
+  .panel {
+    background: var(--white);
+    border-radius: 0 0 15px 15px;
+    box-shadow: var(--hover-shadow);
+    overflow: hidden;
+    border: none;
+  }
+
+  .table-container {
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .table {
+    margin: 0;
+    background: var(--white);
+  }
+
+  .table thead {
+    background: linear-gradient(45deg, #34495e, #2c3e50);
+    color: var(--white);
+  }
+
+  .table thead th {
+    border: none;
+    padding: 20px 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    position: relative;
+  }
+
+  .table thead th:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--secondary-color), var(--success-color));
+  }
+
+  .table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #eee;
+  }
+
+  .table tbody tr:hover {
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .table tbody td {
+    padding: 20px 15px;
+    vertical-align: middle;
+    border: none;
+    font-size: 1rem;
+  }
+
+  .patient-name {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .patient-symptoms {
+    color: #666;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .patient-mobile {
+    font-family: 'Courier New', monospace;
+    background: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    color: var(--secondary-color);
+  }
+
+  .discharge-btn {
+    background: linear-gradient(45deg, var(--success-color), #2ecc71);
+    border: none;
+    color: var(--white);
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .discharge-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(39, 174, 96, 0.4);
+    background: linear-gradient(45deg, #2ecc71, var(--success-color));
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .discharge-btn:active {
+    transform: translateY(-1px);
+  }
+
+  .discharge-icon {
+    font-size: 1.2rem;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+  }
+
+  .empty-state .icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  .empty-state h3 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+  }
+
+  .empty-state p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+
+  .stats-bar {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    display: block;
+  }
+
+  .stat-label {
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container {
+      margin-top: 20px;
+      padding: 10px;
     }
 
-    h6 {
-      text-align: center;
+    .page-header h1 {
+      font-size: 1.8rem;
     }
 
-    .row {
-      margin: 100px;
+    .table thead th,
+    .table tbody td {
+      padding: 15px 10px;
+      font-size: 0.9rem;
     }
-  </style>
-</head>
+
+    .patient-symptoms {
+      max-width: 150px;
+    }
+
+    .discharge-btn {
+      padding: 8px 15px;
+      font-size: 0.8rem;
+    }
+
+    .stats-bar {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+
+  /* Loading Animation */
+  .loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--white);
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Tooltip */
+  [data-tooltip] {
+    position: relative;
+  }
+
+  [data-tooltip]:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--white);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+  }
+
+  [data-tooltip]:hover:before {
+    opacity: 1;
+  }
+</style>
 
 <div class="container">
-  <div class="panel panel-primary">
-    <div class="panel-heading">
-      <h6 class="panel-title">Paciente de alta</h6>
+  <!-- Estadísticas -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number">{{ patients|length }}</span>
+      <span class="stat-label">Pacientes</span>
     </div>
-    <table class="table table-hover" id="dev-table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Sintomas</th>
-          <th>Celular</th>
-          <th>Dar de Alta</th>
-        </tr>
-      </thead>
-      {% for p in patients %}
-      <tr>
-        <td> {{p.get_name}}</td>
-        <td>{{p.symptoms}}</td>
-        <td>{{p.mobile}}</td>
-        <td><a class="btn btn-primary btn-xs" href="{% url 'discharge-patient' p.id  %}"><span class="glyphicon glyphicon-log-out"></span></a></td>
-      </tr>
-      {% endfor %}
-    </table>
   </div>
 
+  <!-- Header -->
+  <div class="page-header">
+    <h1>
+      <i class="fas fa-user-check"></i>
+      Alta de Pacientes
+    </h1>
+    <p class="subtitle">Gestión de altas médicas del sistema hospitalario</p>
+  </div>
 
+  <!-- Panel Principal -->
+  <div class="panel panel-primary">
+    <div class="table-container">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>
+              <i class="fas fa-user"></i>
+              Nombre del Paciente
+            </th>
+            <th>
+              <i class="fas fa-stethoscope"></i>
+              Síntomas
+            </th>
+            <th>
+              <i class="fas fa-phone"></i>
+              Contacto
+            </th>
+            <th>
+              <i class="fas fa-clipboard-check"></i>
+              Acción
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in patients %}
+          <tr>
+            <td class="patient-name">
+              <i class="fas fa-user-circle" style="color: #3498db; margin-right: 8px;"></i>
+              {{ p.get_name }}
+            </td>
+            <td class="patient-symptoms" data-tooltip="{{ p.symptoms }}">
+              {{ p.symptoms|truncatechars:50 }}
+            </td>
+            <td>
+              <span class="patient-mobile">
+                <i class="fas fa-mobile-alt"></i>
+                {{ p.mobile }}
+              </span>
+            </td>
+            <td>
+              <a class="discharge-btn" 
+                 href="{% url 'discharge-patient' p.id %}" 
+                 data-tooltip="Dar de alta a {{ p.get_name }}"
+                 onclick="return confirm('¿Está seguro de dar de alta a {{ p.get_name }}?');">
+                <i class="fas fa-sign-out-alt discharge-icon"></i>
+                Dar de Alta
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="empty-state">
+              <div class="icon">
+                <i class="fas fa-bed"></i>
+              </div>
+              <h3>No hay pacientes para dar de alta</h3>
+              <p>Todos los pacientes están recibiendo el tratamiento adecuado</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
+<!-- Font Awesome para los iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 {% endblock content %}

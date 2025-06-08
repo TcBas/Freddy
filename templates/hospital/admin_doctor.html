@@ -1,119 +1,473 @@
 {% extends 'hospital/admin_base.html' %}
 {% load static %}
 {% block content %}
-<br><br>
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap 4 y FontAwesome -->
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-
+  <!-- Bootstrap 5 y FontAwesome 6 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
+    :root {
+      --primary-blue: #4f46e5;
+      --primary-green: #10b981;
+      --primary-yellow: #f59e0b;
+      --primary-pink: #ec4899;
+      --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .dashboard-container {
+      padding: 2rem 0;
+      min-height: 80vh;
+    }
+
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .dashboard-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .dashboard-subtitle {
+      font-size: 1.1rem;
+      color: #6b7280;
+      font-weight: 400;
+    }
+
+    .admin-card {
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: var(--shadow-light);
+      position: relative;
+      height: 200px;
+      background: white;
+    }
+
+    .admin-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--card-gradient);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .admin-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .admin-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .card-content {
+      padding: 2rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .admin-card:hover .card-icon {
+      transform: scale(1.2) rotate(5deg);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .card-description {
+      font-size: 0.875rem;
+      color: #6b7280;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .card-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--card-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+
+    .admin-card:hover .card-overlay {
+      opacity: 0.95;
+    }
+
+    .admin-card:hover .card-content {
+      color: white;
+    }
+
+    .admin-card:hover .card-title,
+    .admin-card:hover .card-description {
+      color: white;
+    }
+
+    /* Colores específicos para cada tarjeta */
+    .card-doctors {
+      --card-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .card-doctors .card-icon {
+      color: var(--primary-blue);
+    }
+
+    .card-register {
+      --card-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .card-register .card-icon {
+      color: var(--primary-pink);
+    }
+
+    .card-approve {
+      --card-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .card-approve .card-icon {
+      color: var(--primary-green);
+    }
+
+    .card-specialties {
+      --card-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+
+    .card-specialties .card-icon {
+      color: var(--primary-yellow);
+    }
+
+    .stats-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #1f2937;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+    }
+
+    .admin-card:hover .stats-badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Animaciones de entrada */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .admin-card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .admin-card:nth-child(1) { animation-delay: 0.1s; }
+    .admin-card:nth-child(2) { animation-delay: 0.2s; }
+    .admin-card:nth-child(3) { animation-delay: 0.3s; }
+    .admin-card:nth-child(4) { animation-delay: 0.4s; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard-title {
+        font-size: 2rem;
+      }
+      
+      .admin-card {
+        height: 180px;
+      }
+      
+      .card-content {
+        padding: 1.5rem;
+      }
+      
+      .card-icon {
+        font-size: 2.5rem;
+      }
+    }
+
+    /* Efectos adicionales */
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+      }
+    }
+
+    /* Links sin decoración */
     a {
       text-decoration: none;
       color: inherit;
     }
 
-    h6 {
-      color: white;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .order-card {
-      color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s ease-in-out;
-    }
-
-    .order-card:hover {
-      transform: scale(1.03);
-    }
-
-    .bg-c-blue {
-      background: linear-gradient(45deg, #4099ff, #73b4ff);
-    }
-
-    .bg-c-green {
-      background: linear-gradient(45deg, #2ed8b6, #59e0c5);
-    }
-
-    .bg-c-yellow {
-      background: linear-gradient(45deg, #FFB64D, #ffcb80);
-    }
-
-    .bg-c-pink {
-      background: linear-gradient(45deg, #FF5370, #ff869a);
-    }
-
-    .card .card-block {
-      padding: 25px;
-    }
-
-    .order-card i {
-      font-size: 30px;
-    }
-
-    .f-left {
-      float: left;
-    }
-
-    .f-right {
-      float: right;
+    a:hover {
+      text-decoration: none;
+      color: inherit;
     }
   </style>
 </head>
 
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-6 col-xl-3 mb-4">
-      <div class="card bg-c-blue order-card">
-        <div class="card-block">
-          <a href="/admin-view-doctor" aria-label="Ver registro de doctores">
-            <h6>Registro de Doctores</h6>
-            <h2 class="text-right"><i class="fas fa-user-nurse f-left"></i></h2>
-          </a>
-        </div>
-      </div>
+<div class="dashboard-container">
+  <div class="container">
+    <!-- Header del Dashboard -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">
+        <i class="fas fa-tachometer-alt me-3"></i>
+        Panel de Administración
+      </h1>
+      <p class="dashboard-subtitle">Gestiona doctores y especialidades médicas</p>
     </div>
 
-    <div class="col-md-6 col-xl-3 mb-4">
-      <div class="card bg-c-green order-card">
-        <div class="card-block">
-          <a href="/admin-add-doctor" aria-label="Registrar nuevo doctor">
-            <h6>Registrar Doctor</h6>
-            <h2 class="text-right"><i class="fas fa-user-plus f-left"></i></h2>
-          </a>
-        </div>
+    <!-- Grid de Tarjetas -->
+    <div class="row g-4 justify-content-center">
+      
+      <!-- Tarjeta: Ver Doctores -->
+      <div class="col-lg-3 col-md-6">
+        <a href="/admin-view-doctor" aria-label="Ver registro de doctores">
+          <div class="card admin-card card-doctors">
+            <div class="card-overlay"></div>
+            <div class="stats-badge">
+              <i class="fas fa-eye me-1"></i>Ver
+            </div>
+            <div class="card-content text-center">
+              <div class="card-icon">
+                <i class="fas fa-user-nurse"></i>
+              </div>
+              <h5 class="card-title">Registro de Doctores</h5>
+              <p class="card-description">
+                Visualiza y gestiona la lista completa de doctores registrados en el sistema
+              </p>
+            </div>
+          </div>
+        </a>
       </div>
+
+      <!-- Tarjeta: Registrar Doctor -->
+      <div class="col-lg-3 col-md-6">
+        <a href="/admin-add-doctor" aria-label="Registrar nuevo doctor">
+          <div class="card admin-card card-register">
+            <div class="card-overlay"></div>
+            <div class="stats-badge">
+              <i class="fas fa-plus me-1"></i>Nuevo
+            </div>
+            <div class="card-content text-center">
+              <div class="card-icon">
+                <i class="fas fa-user-plus"></i>
+              </div>
+              <h5 class="card-title">Registrar Doctor</h5>
+              <p class="card-description">
+                Añade nuevos doctores al sistema con toda su información profesional
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Tarjeta: Aprobar Doctores -->
+      <div class="col-lg-3 col-md-6">
+        <a href="/admin-approve-doctor" aria-label="Aprobar doctor pendiente">
+          <div class="card admin-card card-approve pulse">
+            <div class="card-overlay"></div>
+            <div class="stats-badge">
+              <i class="fas fa-clock me-1"></i>Pendiente
+            </div>
+            <div class="card-content text-center">
+              <div class="card-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <h5 class="card-title">Aprobar Doctor</h5>
+              <p class="card-description">
+                Revisa y aprueba las solicitudes de registro de nuevos doctores
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Tarjeta: Especialidades -->
+      <div class="col-lg-3 col-md-6">
+        <a href="/admin-view-doctor-specialisation" aria-label="Ver especialidades médicas">
+          <div class="card admin-card card-specialties">
+            <div class="card-overlay"></div>
+            <div class="stats-badge">
+              <i class="fas fa-list me-1"></i>Lista
+            </div>
+            <div class="card-content text-center">
+              <div class="card-icon">
+                <i class="fas fa-user-md"></i>
+              </div>
+              <h5 class="card-title">Especialidades Médicas</h5>
+              <p class="card-description">
+                Administra las diferentes especialidades médicas disponibles
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+
     </div>
 
-    <div class="col-md-6 col-xl-3 mb-4">
-      <div class="card bg-c-yellow order-card">
-        <div class="card-block">
-          <a href="/admin-approve-doctor" aria-label="Aprobar doctor pendiente">
-            <h6>Aprobar Doctor</h6>
-            <h2 class="text-right"><i class="fas fa-check-circle f-left"></i></h2>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6 col-xl-3 mb-4">
-      <div class="card bg-c-pink order-card">
-        <div class="card-block">
-          <a href="/admin-view-doctor-specialisation" aria-label="Ver especialidades médicas">
-            <h6>Especialidades Médicas</h6>
-            <h2 class="text-right"><i class="fas fa-user-md f-left"></i></h2>
-          </a>
+    <!-- Sección de estadísticas rápidas (opcional) -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 20px;">
+          <div class="card-body text-white text-center py-4">
+            <h5 class="mb-3">
+              <i class="fas fa-chart-line me-2"></i>
+              Estadísticas del Sistema
+            </h5>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <i class="fas fa-users fa-2x mb-2"></i>
+                  <h4>{{ total_doctors|default:"0" }}</h4>
+                  <small>Doctores Activos</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <i class="fas fa-user-clock fa-2x mb-2"></i>
+                  <h4>{{ pending_doctors|default:"0" }}</h4>
+                  <small>Pendientes de Aprobación</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <i class="fas fa-stethoscope fa-2x mb-2"></i>
+                  <h4>{{ total_specialties|default:"0" }}</h4>
+                  <small>Especialidades</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-2">
+                  <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                  <h4>{{ total_appointments|default:"0" }}</h4>
+                  <small>Citas Hoy</small>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<br><br><br><br><br><br><br>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Animaciones adicionales al cargar
+  document.addEventListener('DOMContentLoaded', function() {
+    // Efecto de aparición suave
+    const cards = document.querySelectorAll('.admin-card');
+    
+    // Observer para animaciones cuando entran al viewport
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    });
+
+    cards.forEach(card => {
+      observer.observe(card);
+    });
+
+    // Efecto de ripple en las tarjetas
+    cards.forEach(card => {
+      card.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.classList.add('ripple');
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+  });
+</script>
+
+<style>
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    pointer-events: none;
+  }
+
+  @keyframes ripple-animation {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+</style>
+
 {% endblock content %}
